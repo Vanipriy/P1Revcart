@@ -30,12 +30,18 @@ pipeline {
     steps {
         dir('backend') {
             script {
-                def jarFile = bat(script: "for %i in (target\\*.jar) do @echo %i", returnStdout: true).trim()
-                bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest --build-arg JAR_FILE=${jarFile} ."
+                def jarFile = bat(returnStdout: true, script: 'for %i in (target\\*.jar) do @echo %i').trim()
+                def imageName = "${DOCKER_HUB_USER}/${IMAGE_NAME}:latest"
+                
+                echo "Using JAR file: ${jarFile}"
+                echo "Docker Image: ${imageName}"
+                
+                bat "docker build -t ${imageName} --build-arg JAR_FILE=${jarFile} ."
             }
         }
     }
 }
+
 
 
         stage('Docker Login') {
