@@ -37,6 +37,28 @@ pipeline {
             }
         }
 
+        stage('Push Docker Image to AWS ECR') {
+    steps {
+        withCredentials([
+            string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
+            string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
+        ]) {
+            bat """
+            aws configure set aws_access_key_id %AWS_ACCESS_KEY_ID%
+            aws configure set aws_secret_access_key %AWS_SECRET_ACCESS_KEY%
+            aws configure set default.region ap-south-1
+
+            aws ecr get-login-password --region ap-south-1 ^
+            | docker login --username AWS --password-stdin 744640651616.dkr.ecr.ap-south-1.amazonaws.com
+
+            docker tag ${IMAGE_NAME}:latest 744640651616.dkr.ecr.ap-south-1.amazonaws.com/${IMAGE_NAME}:latest
+            docker push 744640651616.dkr.ecr.ap-south-1.amazonaws.com/${IMAGE_NAME}:latest
+            """
+        }
+    }
+}
+
+
         stage('Stop Existing Container if Any') {
             steps {
                 script {
