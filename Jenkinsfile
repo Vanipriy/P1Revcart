@@ -26,12 +26,13 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {
-                dir('backend') {
-                    bat "docker build -t %IMAGE_NAME%:latest ."
-                }
-            }
+    steps {
+        dir('backend') {
+            bat "\"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe\" build -t revcart-backend:latest ."
         }
+    }
+}
+
     }
 
     post {
