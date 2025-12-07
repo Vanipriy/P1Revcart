@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "revcart-backend"
-        DOCKER_HUB_USER = "Vanipriy" // change this
+        DOCKER_HUB_USER = "Vanipriy"
     }
 
     stages {
@@ -17,7 +17,7 @@ pipeline {
         stage('Build Backend JAR') {
             steps {
                 dir('backend') {
-                    sh 'mvn clean package -DskipTests'
+                    bat 'mvn clean package -DskipTests'
                 }
             }
         }
@@ -26,9 +26,9 @@ pipeline {
             steps {
                 dir('backend') {
                     script {
-                        def jarFile = sh(script: "ls target/*.jar", returnStdout: true).trim()
-                        sh """
-                            docker build -t vanipriy/revcart-backend:latest \
+                        def jarFile = bat(script: "for %i in (target\\*.jar) do @echo %i", returnStdout: true).trim()
+                        bat """
+                            docker build -t ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest ^
                             --build-arg JAR_FILE=${jarFile} .
                         """
                     }
@@ -47,7 +47,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.image("vanipriy/revcart-backend:latest").push()
+                    docker.image("${DOCKER_HUB_USER}/${IMAGE_NAME}:latest").push()
                 }
             }
         }
