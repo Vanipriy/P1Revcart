@@ -46,13 +46,13 @@ pipeline {
             bat """
             aws configure set aws_access_key_id %AWS_ACCESS_KEY_ID%
             aws configure set aws_secret_access_key %AWS_SECRET_ACCESS_KEY%
-            aws configure set default.region ap-south-1
+            aws configure set default.region ap-south-2
 
-            aws ecr get-login-password --region ap-south-1 ^
-            | docker login --username AWS --password-stdin 744640651616.dkr.ecr.ap-south-1.amazonaws.com
+            aws ecr get-login-password --region ap-south-2 ^
+            | docker login --username AWS --password-stdin 744640651616.dkr.ecr.ap-south-2.amazonaws.com
 
-            docker tag ${IMAGE_NAME}:latest 744640651616.dkr.ecr.ap-south-1.amazonaws.com/${IMAGE_NAME}:latest
-            docker push 744640651616.dkr.ecr.ap-south-1.amazonaws.com/${IMAGE_NAME}:latest
+            docker tag ${IMAGE_NAME}:latest 744640651616.dkr.ecr.ap-south-2.amazonaws.com/${IMAGE_NAME}:latest
+            docker push 744640651616.dkr.ecr.ap-south-2.amazonaws.com/${IMAGE_NAME}:latest
             """
         }
     }
