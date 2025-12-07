@@ -32,7 +32,7 @@ pipeline {
         stage('Docker Build Image') {
             steps {
                 dir('backend') {
-                    bat "\"${DOCKER_PATH}\" build -t ${IMAGE_NAME}:latest ."
+                    bat "docker build -t ${IMAGE_NAME} ."
                 }
             }
         }
