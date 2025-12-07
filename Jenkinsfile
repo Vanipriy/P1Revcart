@@ -28,10 +28,18 @@ pipeline {
         stage('Build Docker Image') {
     steps {
         dir('backend') {
-            bat "\"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe\" build -t revcart-backend:latest ."
+            withCredentials([usernamePassword(
+                credentialsId: 'docker-hub-credentials',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASS'
+            )]) {
+                bat "\"${env.DOCKER_PATH}\" login -u %DOCKER_USER% -p %DOCKER_PASS%"
+                bat "\"${env.DOCKER_PATH}\" build -t revcart-backend:latest ."
+            }
         }
     }
 }
+
 
     }
 
