@@ -10,13 +10,13 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'master', credentialsId: 'github-credentials',
-                    url: 'https://github.com/Vanipriy/P1-RevCart.git'
+                    url: 'https://github.com/Vanipriy/P1Revcart.git'
             }
         }
 
         stage('Build Backend JAR') {
             tools {
-                maven 'Maven-3.9'
+                maven 'M3'
             }
             steps {
                 dir('backend') {
@@ -32,7 +32,6 @@ pipeline {
                 }
             }
         }
-
     }
 
     post {
