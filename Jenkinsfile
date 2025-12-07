@@ -25,6 +25,15 @@ pipeline {
             }
         }
 
+        withCredentials([usernamePassword(credentialsId: "docker-hub-credentials",
+                                  usernameVariable: "DOCKER_USER",
+                                  passwordVariable: "DOCKER_PASS")]) {
+    bat "\"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe\" login -u %DOCKER_USER% -p %DOCKER_PASS%"
+    bat "\"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe\" build -t revcart-backend:latest ."
+    bat "\"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe\" push vanipriy/revcart-backend:latest"
+}
+
+
         stage('Build Docker Image') {
     steps {
         dir('backend') {
