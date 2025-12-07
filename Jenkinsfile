@@ -31,26 +31,30 @@ pipeline {
         dir('backend') {
             script {
 
-                // Get JAR file
+                // Find JAR file with Windows command
                 def jarFile = bat(
                     script: 'for %i in (target\\*.jar) do @echo %i',
                     returnStdout: true
                 ).trim()
 
-                // Convert backslashes → forward slashes for Docker
-                jarFile = jarFile.replace('\\', '/')
+                echo "Detected JAR File: ${jarFile}"
 
-                echo "Using JAR file: ${jarFile}"
+                // Convert Windows backslashes -> forward slashes
+                def jarUnix = jarFile.replace('\\', '/')
 
                 def imageName = "${DOCKER_HUB_USER}/${IMAGE_NAME}:latest"
+
                 echo "Building Docker Image: ${imageName}"
 
-                // Run docker build
-                bat "docker build -t ${imageName} --build-arg JAR_FILE=${jarFile} ."
+                // Run Docker Build clean format for Windows CMD
+                bat """
+                docker build -t ${imageName} --build-arg JAR_FILE=${jarUnix} .
+                """
             }
         }
     }
 }
+
 
 
 
