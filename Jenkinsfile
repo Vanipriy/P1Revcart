@@ -1,9 +1,13 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'M3'   // Jenkins Maven installation name
+    }
+
     environment {
         IMAGE_NAME = "revcart-backend"
-        DOCKER_HUB_USER = "Vanipriy"
+        DOCKER_HUB_USER = "vanipriy"  // Make sure this matches your DockerHub username EXACTLY (lowercase)
     }
 
     stages {
