@@ -1,79 +1,38 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'M3'   // Jenkins Maven installation name
-    }
-
     environment {
-        IMAGE_NAME = "revcart-backend"
-        DOCKER_HUB_USER = "vanipriy"  // Make sure this matches your DockerHub username EXACTLY (lowercase)
+        IMAGE_NAME = 'revcart-backend'
     }
 
     stages {
 
-        stage('Checkout code') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'master', url: 'https://github.com/Vanipriy/P1Revcart.git'
+                git branch: 'master', credentialsId: 'github-credentials',
+                    url: 'https://github.com/Vanipriy/P1-RevCart.git'
             }
         }
 
         stage('Build Backend JAR') {
+            tools {
+                maven 'Maven-3.9'
+            }
             steps {
                 dir('backend') {
-                    bat 'mvn clean package -DskipTests'
+                    bat "mvn clean package -DskipTests"
                 }
             }
         }
 
         stage('Build Docker Image') {
-    steps {
-        dir('backend') {
-            script {
-
-                // Find JAR file with Windows command
-                def jarFile = bat(
-                    script: 'for %i in (target\\*.jar) do @echo %i',
-                    returnStdout: true
-                ).trim()
-
-                echo "Detected JAR File: ${jarFile}"
-
-                // Convert Windows backslashes -> forward slashes
-                def jarUnix = jarFile.replace('\\', '/')
-
-                def imageName = "${DOCKER_HUB_USER}/${IMAGE_NAME}:latest"
-
-                echo "Building Docker Image: ${imageName}"
-
-                // Run Docker Build clean format for Windows CMD
-                bat """
-                docker build -t ${imageName} --build-arg JAR_FILE=${jarUnix} .
-                """
-            }
-        }
-    }
-}
-
-
-
-
-
-        stage('Docker Login') {
             steps {
-                script {
-                    docker.withRegistry('', 'dockerhub-credentials') { }
+                dir('backend') {
+                    bat "docker build -t %IMAGE_NAME%:latest ."
                 }
             }
         }
 
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    docker.image("${DOCKER_HUB_USER}/${IMAGE_NAME}:latest").push()
-                }
-            }
-        }
     }
 
     post {
