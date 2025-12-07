@@ -27,18 +27,16 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {
-                dir('backend') {
-                    script {
-                        def jarFile = bat(script: "for %i in (target\\*.jar) do @echo %i", returnStdout: true).trim()
-                        bat """
-                            docker build -t ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest ^
-                            --build-arg JAR_FILE=${jarFile} .
-                        """
-                    }
-                }
+    steps {
+        dir('backend') {
+            script {
+                def jarFile = bat(script: "for %i in (target\\*.jar) do @echo %i", returnStdout: true).trim()
+                bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest --build-arg JAR_FILE=${jarFile} ."
             }
         }
+    }
+}
+
 
         stage('Docker Login') {
             steps {
